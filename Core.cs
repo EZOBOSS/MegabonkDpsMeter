@@ -87,16 +87,16 @@ namespace megabonkDpsMeter
 
             // Resize window
             float resizeSpeed = 300f * Time.deltaTime;
-            if (Input.GetKey(KeyCode.Plus) || Input.GetKey(KeyCode.KeypadPlus))
+            if (Input.GetKey(KeyCode.Equals) || Input.GetKey(KeyCode.KeypadPlus) || Input.GetKey(KeyCode.Return))
             {
                 windowSize += new Vector2(resizeSpeed, resizeSpeed);
-                MelonLogger.Msg($"Increasing size: {windowSize}");
+                
                 
             }
-            if (Input.GetKey(KeyCode.Minus) || Input.GetKey(KeyCode.KeypadMinus))
+            if (Input.GetKey(KeyCode.Minus) || Input.GetKey(KeyCode.KeypadMinus) || Input.GetKey(KeyCode.Backspace))
             {
                 windowSize -= new Vector2(resizeSpeed, resizeSpeed);
-                MelonLogger.Msg($"Decreasing size: {windowSize}");
+                
                 
             }
             
@@ -198,7 +198,7 @@ namespace megabonkDpsMeter
         {
             var contentEntries = GameObject.Find("GameUI/GameUI/DeathScreen/StatsWindows/W_Damage/WindowLayers/Content/ScrollRect/ContentEntries");
             if (contentEntries == null) return;
-            MelonLogger.Msg($"trigger: {contentEntries}");
+            
             Transform contentTransform = contentEntries.transform;
             for (int i = contentTransform.childCount - 1; i >= 3; i--)
             {
