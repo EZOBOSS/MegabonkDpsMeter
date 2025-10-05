@@ -25,9 +25,10 @@ A lightweight **DPS meter mod** for *Megabonk* with real-time updates and full U
 3. **Download** the latest mod release and **unzip** it  
 4. **Copy** `MegabonkDpsMeter.dll` into your game’s `Mods` folder  
 
-📁 Megabonk/
-├─ Mods/
-│ ├─ MegabonkDpsMeter.dll
+📁 Megabonk /
+ Mods /
+ MegabonkDpsMeter.dll
+
 
 ---
 
