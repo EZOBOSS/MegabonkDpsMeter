@@ -1,3 +1,12 @@
+Features
+- Move window
+- Change size
+- Font size
+- Realtime updates (every 2 seconds)
+- Toggle on off (F1)
+
+
+
 Requirements:
 - latest MelonLoader
 
@@ -11,3 +20,4 @@ Keybinds
 - Arrowkeys (Move window)
 - Plus / Minus (Change size)
 - PGUP/PGDN (Header Font Size)
+- F1 (toggle on/off)
