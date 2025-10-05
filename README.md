@@ -1,5 +1,5 @@
 Requirements:
-- latest MelonLoader or BepInEx Bleeding Edge (IL2CPP-win-x64)
+- latest MelonLoader
 
 Installation:
 - install MelonLoader onto Megabonk
