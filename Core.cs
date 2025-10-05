@@ -15,10 +15,10 @@ namespace megabonkDpsMeter
         public static KeyCode toggleKey = KeyCode.F1;
         public static bool disableMeter = false;
 
-        private GameObject statsParent;
-        private GameObject damageWindow;
-        private GameObject statsWindow;
-        private GameObject questsWindow;
+        public GameObject statsParent;
+        public GameObject damageWindow;
+        public GameObject statsWindow;
+        public GameObject questsWindow;
         private Vector2 windowPos;
         private MelonPreferences_Category cat;
         private MelonPreferences_Entry<float> posX;
@@ -32,8 +32,11 @@ namespace megabonkDpsMeter
 
         private float refreshTimer = 0f;
         private float refreshRate = 2f; // every 2 seconds
+
+        public static Main Instance;
         public override void OnInitializeMelon()
         {
+            Instance = this;
             // Load / create config
             cat = MelonPreferences.CreateCategory("megabonkDpsMeter", "DPS Meter Settings");
             posX = cat.CreateEntry("PosX", 400f);
@@ -54,8 +57,10 @@ namespace megabonkDpsMeter
             {
                 ToggleStatsWindow();
             }
+            
+
             // Only update if window is visible
-            if (statsParent != null && statsParent.activeSelf)
+            if (statsParent != null && statsParent.activeSelf && !disableMeter)
             {
                 refreshTimer += Time.deltaTime;
                 if (refreshTimer >= refreshRate)
@@ -101,7 +106,7 @@ namespace megabonkDpsMeter
 
             
             // Apply movement + resizing
-            if (statsParent != null && statsParent.activeSelf)
+            if (statsParent != null && statsParent.activeSelf && !disableMeter)
             {
                 var rect = statsParent.GetComponent<RectTransform>();
                 if (rect != null)
@@ -193,7 +198,7 @@ namespace megabonkDpsMeter
         {
             var contentEntries = GameObject.Find("GameUI/GameUI/DeathScreen/StatsWindows/W_Damage/WindowLayers/Content/ScrollRect/ContentEntries");
             if (contentEntries == null) return;
-
+            MelonLogger.Msg($"trigger: {contentEntries}");
             Transform contentTransform = contentEntries.transform;
             for (int i = contentTransform.childCount - 1; i >= 3; i--)
             {
@@ -208,6 +213,7 @@ namespace megabonkDpsMeter
         private static void Postfix(GameManager __instance)
         {
             Main.disableMeter = false;
+           
         }
     }
 
@@ -216,7 +222,34 @@ namespace megabonkDpsMeter
     {
         private static void Postfix(GameManager __instance)
         {
+
             Main.disableMeter = true;
+            
+            if (Main.Instance != null && Main.Instance.statsParent != null)
+            {
+                // --- FIX: Reset position to default on death ---
+                var rect = Main.Instance.statsParent.GetComponent<RectTransform>();
+                if (rect != null)
+                {
+                    // Reset anchored position to (0, 0), which typically centers the UI element
+                    rect.anchoredPosition = Vector2.zero;
+                    MelonLogger.Msg("Resetting stats screen position to default (0, 0) on death.");
+                }
+
+                bool newState = !Main.Instance.statsParent.activeSelf;
+                Main.Instance.statsParent.SetActive(newState);
+                Main.Instance.statsWindow?.SetActive(!newState);
+                Main.Instance.questsWindow?.SetActive(!newState);
+
+
+                if (newState)
+                    {
+                        var ui = Main.Instance.statsParent.GetComponentInChildren<GameOverDamageSourcesUi>();
+                        
+                        ui?.Start();
+                    }
+                
+            }
         }
     }
 }
