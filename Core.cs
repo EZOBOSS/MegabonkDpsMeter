@@ -5,7 +5,7 @@ using MelonLoader;
 using UnityEngine;
 
 
-[assembly: MelonInfo(typeof(megabonkDpsMeter.Main), "megabonkDpsMeter", "1.0.0", "pasele")]
+[assembly: MelonInfo(typeof(megabonkDpsMeter.Main), "megabonkDpsMeter", "1.0.1", "pasele")]
 [assembly: MelonGame("Ved", "Megabonk")] 
 
 namespace megabonkDpsMeter
