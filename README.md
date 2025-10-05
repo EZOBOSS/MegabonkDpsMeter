@@ -21,3 +21,6 @@ Keybinds
 - Plus / Minus (Change size)
 - PGUP/PGDN (Header Font Size)
 - F1 (toggle on/off)
+
+
+fork from https://github.com/tahaaydn/megabonkDpsMeter
