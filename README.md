@@ -37,6 +37,7 @@ A lightweight **DPS meter mod** for *Megabonk* with real-time updates and full U
 |:-------|:----|
 | Move window | ⬅️➡️⬆️⬇️ (Arrow Keys) |
 | Change size | ➕ / ➖ |
+| Change opacity | K / L |
 | Change header font size | PgUp / PgDn |
 | Toggle meter | F1 |
 
