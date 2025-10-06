@@ -5,7 +5,7 @@ using MelonLoader;
 using UnityEngine;
 
 
-[assembly: MelonInfo(typeof(megabonkDpsMeter.Main), "megabonkDpsMeter", "1.0.1", "pasele")]
+[assembly: MelonInfo(typeof(megabonkDpsMeter.Main), "megabonkDpsMeter", "1.0.3", "pasele")]
 [assembly: MelonGame("Ved", "Megabonk")] 
 
 namespace megabonkDpsMeter
@@ -34,6 +34,10 @@ namespace megabonkDpsMeter
         private float refreshRate = 2f; // every 2 seconds
 
         public static Main Instance;
+
+        private MelonPreferences_Entry<float> opacityEntry;
+        private float opacity = 1f; // full visible
+
         public override void OnInitializeMelon()
         {
             Instance = this;
@@ -47,6 +51,9 @@ namespace megabonkDpsMeter
             windowSize = new Vector2(widthEntry.Value, heightEntry.Value);
             fontSizeEntry = cat.CreateEntry("FontSize", 4f);
             fontSize = fontSizeEntry.Value;
+            opacityEntry = cat.CreateEntry("Opacity", 1f);
+            opacity = Mathf.Clamp(opacityEntry.Value, 0.1f, 1f);
+
 
             MelonLogger.Msg("megabonkDpsMeter loaded!");
         }
@@ -76,7 +83,18 @@ namespace megabonkDpsMeter
             // font size
             if (Input.GetKey(KeyCode.PageUp)) { fontSize += 10f * Time.deltaTime; ApplyFontSize(); }
             if (Input.GetKey(KeyCode.PageDown)) { fontSize -= 10f * Time.deltaTime; ApplyFontSize(); }
-            
+            // opacity control
+            if (Input.GetKey(KeyCode.K)) 
+            {
+                opacity = Mathf.Max(0.1f, opacity - 0.5f * Time.deltaTime);
+                ApplyOpacity();
+            }
+            if (Input.GetKey(KeyCode.L)) 
+            {
+                opacity = Mathf.Min(1f, opacity + 0.5f * Time.deltaTime);
+                ApplyOpacity();
+            }
+
 
             // move window
             float moveSpeed = 200f * Time.deltaTime;
@@ -155,6 +173,7 @@ namespace megabonkDpsMeter
                 {
                     var ui = statsParent.GetComponentInChildren<GameOverDamageSourcesUi>();
                     ApplyFontSize();
+                    ApplyOpacity();
                     ui?.Start();
                 }
             }
@@ -167,6 +186,8 @@ namespace megabonkDpsMeter
             widthEntry.Value = windowSize.x;
             heightEntry.Value = windowSize.y;
             fontSizeEntry.Value = fontSize;
+            opacityEntry.Value = opacity;
+
             MelonPreferences.Save();
         }
         private void ApplyFontSize()
@@ -188,6 +209,17 @@ namespace megabonkDpsMeter
                 }
             }
         }
+        private void ApplyOpacity()
+        {
+            if (damageWindow == null) return;
+
+            var canvasGroup = damageWindow.GetComponent<CanvasGroup>();
+            if (canvasGroup == null)
+                canvasGroup = damageWindow.AddComponent<CanvasGroup>();
+
+            canvasGroup.alpha = opacity;
+        }
+
     }
 
 
@@ -227,6 +259,7 @@ namespace megabonkDpsMeter
             
             if (Main.Instance != null && Main.Instance.statsParent != null)
             {
+                
                 // --- FIX: Reset position to default on death ---
                 var rect = Main.Instance.statsParent.GetComponent<RectTransform>();
                 if (rect != null)
