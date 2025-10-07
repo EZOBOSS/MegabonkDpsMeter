@@ -5,7 +5,7 @@ using MelonLoader;
 using UnityEngine;
 
 
-[assembly: MelonInfo(typeof(megabonkDpsMeter.Main), "megabonkDpsMeter", "1.0.3", "pasele")]
+[assembly: MelonInfo(typeof(megabonkDpsMeter.Main), "megabonkDpsMeter", "1.0.4", "pasele")]
 [assembly: MelonGame("Ved", "Megabonk")] 
 
 namespace megabonkDpsMeter
@@ -19,6 +19,9 @@ namespace megabonkDpsMeter
         public GameObject damageWindow;
         public GameObject statsWindow;
         public GameObject questsWindow;
+        private GameObject damageHeader;
+        private GameObject damageHeaderShadow;
+
         private Vector2 windowPos;
         private MelonPreferences_Category cat;
         private MelonPreferences_Entry<float> posX;
@@ -38,6 +41,10 @@ namespace megabonkDpsMeter
         private MelonPreferences_Entry<float> opacityEntry;
         private float opacity = 1f; // full visible
 
+        private MelonPreferences_Entry<float> headerOpacityEntry;
+        private float headerOpacity = 1f; // fully visible by default
+
+
         public override void OnInitializeMelon()
         {
             Instance = this;
@@ -53,6 +60,8 @@ namespace megabonkDpsMeter
             fontSize = fontSizeEntry.Value;
             opacityEntry = cat.CreateEntry("Opacity", 1f);
             opacity = Mathf.Clamp(opacityEntry.Value, 0.1f, 1f);
+            headerOpacityEntry = cat.CreateEntry("HeaderOpacity", 1f);
+            headerOpacity = Mathf.Clamp01(headerOpacityEntry.Value);
 
 
             MelonLogger.Msg("megabonkDpsMeter loaded!");
@@ -94,6 +103,15 @@ namespace megabonkDpsMeter
                 opacity = Mathf.Min(1f, opacity + 0.5f * Time.deltaTime);
                 ApplyOpacity();
             }
+            if (Input.GetKeyDown(KeyCode.O))
+            {
+                float newAlpha = (headerOpacity == 0f) ? 1f : 0f;
+                SetHeaderOpacity(newAlpha);
+                headerOpacity = newAlpha;
+                MelonLogger.Msg($"Toggled header opacity to {newAlpha}");
+            }
+
+
 
 
             // move window
@@ -158,6 +176,11 @@ namespace megabonkDpsMeter
                     damageWindow = statsParent.transform.Find("W_Damage")?.gameObject;
                     statsWindow = statsParent.transform.Find("W_Stats")?.gameObject;
                     questsWindow = statsParent.transform.Find("W_Quests")?.gameObject;
+
+                    // find the background under header
+                    damageHeader = statsParent.transform.Find("W_Damage/Header")?.gameObject;
+                    damageHeaderShadow = statsParent.transform.Find("W_Damage/Shadow")?.gameObject;
+
                 }
             }
 
@@ -174,6 +197,7 @@ namespace megabonkDpsMeter
                     var ui = statsParent.GetComponentInChildren<GameOverDamageSourcesUi>();
                     ApplyFontSize();
                     ApplyOpacity();
+                    SetHeaderOpacity(headerOpacity);
                     ui?.Start();
                 }
             }
@@ -187,6 +211,7 @@ namespace megabonkDpsMeter
             heightEntry.Value = windowSize.y;
             fontSizeEntry.Value = fontSize;
             opacityEntry.Value = opacity;
+            headerOpacityEntry.Value = headerOpacity;
 
             MelonPreferences.Save();
         }
@@ -219,6 +244,31 @@ namespace megabonkDpsMeter
 
             canvasGroup.alpha = opacity;
         }
+        private void SetHeaderOpacity(float alpha)
+        {
+            headerOpacity = Mathf.Clamp01(alpha);
+
+            // Apply to header
+            if (damageHeader != null)
+            {
+                var cg = damageHeader.GetComponent<CanvasGroup>();
+                if (cg == null)
+                    cg = damageHeader.AddComponent<CanvasGroup>();
+                cg.alpha = headerOpacity;
+            }
+
+            // Apply to shadow
+            if (damageHeaderShadow != null)
+            {
+                var cg = damageHeaderShadow.GetComponent<CanvasGroup>();
+                if (cg == null)
+                    cg = damageHeaderShadow.AddComponent<CanvasGroup>();
+                cg.alpha = headerOpacity;
+            }
+        }
+
+
+
 
     }
 
