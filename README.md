@@ -1,4 +1,4 @@
-# 🧮 Megabonk DPS Meter
+<img width="789" height="647" alt="image" src="https://github.com/user-attachments/assets/826f4481-f66e-4673-9116-c13ce13feee6" /># 🧮 Megabonk DPS Meter
 
 A lightweight **DPS meter mod** for *Megabonk* with real-time updates and full UI control.
 
@@ -38,6 +38,7 @@ A lightweight **DPS meter mod** for *Megabonk* with real-time updates and full U
 | Move window | ⬅️➡️⬆️⬇️ (Arrow Keys) |
 | Change size | ➕ / ➖ |
 | Change opacity | K / L |
+| Toggle header visibility | O |
 | Change header font size | PgUp / PgDn |
 | Toggle meter | F1 |
 
